@@ -55,6 +55,7 @@ newdict = {}
 for obj in top20howMany:
     # print(obj)
     newdict[obj[0]] = obj[1]
+    print(obj[1][0])
 
 # print(newdict)
 nlp = StanfordCoreNLP('http://corenlp.run', port=80)
