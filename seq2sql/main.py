@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import numpy as np
 import jsonlines
 from pprint import pprint
@@ -7,16 +8,18 @@ from nltk import pos_tag
 from nltk import parse
 import collections
 import nltk
+from langdetect import detect
 # nltk.download()
 
 
-
+count = 0
 questions ={}
 with jsonlines.open('train.jsonl') as data_file:
     for obj in data_file:
+        count += 1
         questions[obj['table_id']] = obj['question']
-# print(questions)
-
+print(len(questions))
+print('count = ',count)
 
 colums = {}
 with jsonlines.open('train.tables.jsonl') as table_file:
@@ -28,24 +31,29 @@ queColumn = {}
 for key in (questions.keys()):
     if key in questions: queColumn.setdefault(key, []).append(questions[key])
     if key in colums: queColumn.setdefault(key, []).append(colums[key])
-# print(queColumn)
-# for key in queColumn:
-#     print(key)
-#     print(queColumn[key])
-#     print(queColumn[key][0])
-#     print(queColumn[key][1])
 
-# nlp = StanfordCoreNLP('http://corenlp.run', port=80)
+
 howMany = {}
+sum = 0
+queryType = {}
+
 for key in queColumn:
     question = word_tokenize(queColumn[key][0])
-    # print(question)
+    if question[0].lower() not in queryType:
+        queryType[question[0].lower()] = 1
+    else:
+        queryType[question[0].lower()] = queryType[question[0].lower()] +1
     if(question[0] == 'How' and question[1] == 'many'):
         # print(question)
         howMany[key] = queColumn[key]
 print('end')
-# print(howMany)
-# print(len(howMany))
+
+import operator
+
+
+print(sorted(queryType.items(),key = operator.itemgetter(1)))
+print(sum)
+
 top20howMany = {}
 
 
@@ -53,11 +61,10 @@ top20howMany = collections.Counter(howMany).most_common(20)
 # print(top20howMany)
 newdict = {}
 for obj in top20howMany:
-    # print(obj)
     newdict[obj[0]] = obj[1]
-    print(obj[1][0])
+    # print(obj[1][0])
 
-# print(newdict)
+
 nlp = StanfordCoreNLP('http://corenlp.run', port=80)
 tags = []
 parse = []
@@ -68,7 +75,22 @@ for key in newdict.keys():
     dependency.append((nlp.dependency_parse(newdict[key][0])))
 print('tag')
 
-print(tags[1])
-print(parse[1])
-print(dependency[1])
-print(howMany['1-1037590-1'])
+# print(tags[1])
+# print(parse[1])
+# print(dependency[1])
+# print(howMany['1-1037590-1'])
+
+for i in range(len(tags)):
+    print(tags[i])
+    print(dependency[i])
+    print('\n')
+
+# file = open('parse.txt','w')
+
+# for i in range(len(tags)):
+#     file.write(str(tags[i]))
+#     file.write(str(parse[i]))
+#     file.write(str(dependency[i]))
+#     file.write('\n')
+# file.close()
+
