@@ -22,14 +22,14 @@ print(table_colums[que_table['Which report is names Thuin Circuit and is dated J
 
 
 '''get the correct column number from the train file'''
-correct_col_number = []
+correct_col_number = {}
 with jsonlines.open('train.jsonl') as table_file:
     for obj in table_file:
-        correct_col_number.append(obj["sql"]["sel"])
+        correct_col_number[obj["question"].strip()] =(obj["sql"]["sel"])
 
 
 
-result = []
+result = {}
 getc = getColumn.getColumns()
 k = 0
 for question in que_table.keys():
@@ -43,25 +43,31 @@ for question in que_table.keys():
         newQuestion, newColumns = getc.lemmatization_match(question, columns)
         col_number = getc.predictCol(question=newQuestion, columns=newColumns)
 
-    result.append(col_number)
-    if(result[k] != correct_col_number[k]):
-        print('not found', question, table_colums[que_table[question.strip()]])
-        print('prediced=',col_number,' correct=',correct_col_number[k])
+    result[question.strip()] = col_number
+    # if(result[question.strip()] != correct_col_number[question.strip()]):
+    #     print('not found', question, table_colums[que_table[question.strip()]])
+    #     print('prediced=',col_number,' correct=',correct_col_number[question.strip()])
 
     k += 1
-    # if(col_number == -1):
-    #     print('not found',question, table_colums[que_table[question.strip()]])
+    
 
 print('result len',len(result),result)
 
 
 count = 0
 minus1 = 0
-for k in range(len(que_table)):
-    if result[k] == -1:
-        minus1 += 1
-    if result[k] == correct_col_number[k]:
+
+for q in que_table.keys():
+    if result[q.strip()] != correct_col_number[q.strip()]:
         count += 1
+
+
+
+# for k in range(len(que_table)):
+#     if result[k] == -1:
+#         minus1 += 1
+#     if result[k] == correct_col_number[k]:
+#         count += 1
 
 print('count',count)
 print('minus1',minus1)
