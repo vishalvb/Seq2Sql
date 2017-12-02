@@ -35,13 +35,13 @@ k = 0
 for question in que_table.keys():
     columns = table_colums[que_table[question.strip()]]
     col_number = getc.predictCol(question= question,columns=columns)
-    if (col_number == -1):
-        newQuestion, newColumns = getc.stemming_match(question,columns)
-        col_number = getc.predictCol(question=newQuestion,columns=newColumns)
+    # if (col_number == -1):
+    newQuestion, newColumns = getc.stemming_match(question,columns)
+    col_number = getc.predictCol(question=newQuestion,columns=newColumns)
 
-    if(col_number == -1):
-        newQuestion, newColumns = getc.lemmatization_match(question, columns)
-        col_number = getc.predictCol(question=newQuestion, columns=newColumns)
+    # if(col_number == -1):
+    newQuestion, newColumns = getc.lemmatization_match(question, columns)
+    col_number = getc.predictCol(question=newQuestion, columns=newColumns)
 
     result[question.strip()] = col_number
     # if(result[question.strip()] != correct_col_number[question.strip()]):
@@ -49,9 +49,9 @@ for question in que_table.keys():
     #     print('prediced=',col_number,' correct=',correct_col_number[question.strip()])
 
     k += 1
-    
 
-print('result len',len(result),result)
+
+# print('result len',len(result),result)
 
 
 count = 0
