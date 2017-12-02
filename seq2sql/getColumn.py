@@ -2,7 +2,7 @@ from stanfordcorenlp import StanfordCoreNLP
 from nltk import word_tokenize
 from nltk import sent_tokenize
 import numpy as np
-from pycorenlp import StanfordCoreNLP
+from nltk.stem import PorterStemmer, WordNetLemmatizer
 
 import nltk
 
@@ -28,23 +28,50 @@ class getColumns:
     find the column which appears first in the sentence 
     with the help of pos tags
     '''
-    def find_first_noun(self,columns, probable_columns, postags):
-        nouns = ['NN', 'NNS', 'NNP', 'NNPS', 'JJ', 'JJR', 'JJS']
-        n = {}
-        for i in range(len(postags)):
-            if (postags[i][1] in nouns):
-                n[i] = (postags[i][0])
+    def find_first_noun(self,columns, probable_columns, question):
 
-        col_noun = {}
+        colum_with_number = {}
         for col in probable_columns:
-            if col in n.values():
-                col_noun[col] = list(n.keys())[list(n.values()).index(col)]
-
-        # print('col_noun',col_noun)
+            colum_with_number[col] = question.lower().find(col.lower())
         number = -1
-        if len(col_noun) > 0:
-            number = self.findcolum(columns,min(col_noun, key=col_noun.get))
+        if len(colum_with_number) > 0:
+            number = self.findcolum(columns, min(colum_with_number, key=colum_with_number.get))
         return number
+
+    '''
+    perform stemming and match the column
+    '''
+    def stemming_match(self,question,columns):
+        new_question = ''
+        new_columns = []
+        stemmer = PorterStemmer()
+        for words in word_tokenize(question):
+            new_question +=stemmer.stem(words)
+            new_question += ' '
+
+        for column in columns:
+            new_columns.append(stemmer.stem(column))
+
+        return new_question,new_columns
+
+    '''
+    perform lemmatization and match the column
+    '''
+
+    def lemmatization_match(self, question, columns):
+        new_question = ''
+        new_columns = []
+        lemmatize = WordNetLemmatizer()
+        for words in word_tokenize(question):
+            new_question += lemmatize.lemmatize(words)
+            new_question += ' '
+
+        for column in columns:
+            new_columns.append(lemmatize.lemmatize(column))
+
+        return new_question, new_columns
+
+
 
     '''
     predicts the column for the question
@@ -60,7 +87,28 @@ class getColumns:
         find = -1
         if len(probable_colum) == 1:
             find = self.findcolum(columns,probable_colum[0])
-        elif len(probable_colum) > 1:
-            find = self.find_first_noun(columns,probable_colum,postag)
+        if find == -1:
+            find = self.find_first_noun(columns,probable_colum,question)
+
 
         return find
+
+
+    #
+    # def find_first_noun(self,columns, probable_columns, postags):
+    #     nouns = ['NN', 'NNS', 'NNP', 'NNPS', 'JJ', 'JJR', 'JJS']
+    #     n = {}
+    #     for i in range(len(postags)):
+    #         if (postags[i][1] in nouns):
+    #             n[i] = (postags[i][0])
+    #
+    #     col_noun = {}
+    #     for col in probable_columns:
+    #         if col in n.values():
+    #             col_noun[col] = list(n.keys())[list(n.values()).index(col)]
+    #
+    #     # print('col_noun',col_noun)
+    #     number = -1
+    #     if len(col_noun) > 0:
+    #         number = self.findcolum(columns,min(col_noun, key=col_noun.get))
+    #     return number

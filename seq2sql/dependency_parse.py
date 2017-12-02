@@ -23,3 +23,10 @@ print('postag',nlp.pos_tag(question))
 #tokenize
 c = 'Text/background colour'
 print('c',c.split(sep='/'))
+
+from nltk.corpus import wordnet
+import language_check
+
+a = 'number'
+b = 'no.'
+print('similarity',b )
