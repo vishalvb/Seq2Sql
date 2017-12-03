@@ -34,7 +34,8 @@ getc = getColumn.getColumns()
 k = 0
 for question in que_table.keys():
     columns = table_colums[que_table[question.strip()]]
-    # col_number = getc.predictCol(question= question,columns=columns)
+    # print('question',question,type(question))
+    col_number = getc.predictCol(question= question,columns=columns)
 
     #stemming and match
     # if (col_number == -1):
@@ -43,8 +44,8 @@ for question in que_table.keys():
 
     #lemmatization and match
     # if(col_number == -1):
-    newQuestion, newColumns = getc.lemmatization_match(question, columns)
-    col_number = getc.predictCol(question=newQuestion, columns=newColumns)
+    # newQuestion, newColumns = getc.lemmatization_match(question, columns)
+    # col_number = getc.predictCol(question=newQuestion, columns=newColumns)
 
     result[question.strip()] = col_number
     # if(result[question.strip()] != correct_col_number[question.strip()]):
@@ -66,8 +67,8 @@ for q in que_table.keys():
         minus1 += 1
 
 
-print('result',result.values())
-print('correct',correct_col_number.values())
+print('result',len(result),result.values())
+print('correct',len(correct_col_number),correct_col_number.values())
 
 print('count',count)
 print('minus1',minus1)

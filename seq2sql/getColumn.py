@@ -11,6 +11,7 @@ class getColumns:
     def __init__(self):
         self.lemmatize = WordNetLemmatizer()
         self.tokenizer = RegexpTokenizer(r'\w+')
+        self.stemmer = PorterStemmer()
         n = 1
         # # self.nlp = StanfordCoreNLP('http://corenlp.run', port=80)
         # self.nlp = StanfordCoreNLP('http://localhost:9000')
@@ -61,13 +62,13 @@ class getColumns:
     def stemming_match(self,question,columns):
         new_question = ''
         new_columns = []
-        stemmer = PorterStemmer()
+
         for words in word_tokenize(question):
-            new_question +=stemmer.stem(words)
+            new_question +=self.stemmer.stem(words)
             new_question += ' '
 
         for column in columns:
-            new_columns.append(stemmer.stem(column))
+            new_columns.append(self.stemmer.stem(column))
 
         return new_question,new_columns
 
@@ -84,10 +85,7 @@ class getColumns:
             new_question += ' '
 
         for column in columns:
-            # if(question.lower().find(self.lemmatize.lemmatize(column)) != -1):
             new_columns.append(self.lemmatize.lemmatize(column))
-        # if(len(new_columns) <= 0):
-        #     new_columns.append('none')
         return new_question, new_columns
 
 
@@ -99,6 +97,32 @@ class getColumns:
         postag = nltk.pos_tag(word_tokenize(question))
 
         probable_colum = []
+
+        #
+        # temp_question = self.tokenizer.tokenize(question.lower())
+        # lemma_question = []
+        # for words in temp_question:
+        #     lemma_question.append(self.lemmatize.lemmatize(words))
+        # for words in temp_question:
+        #     lemma_question.append(self.stemmer.stem(words))
+        ##
+        # for column in columns:
+        #     # if(len(self.tokenizer(column)) == 1):
+        #     #     if (question.lower().find(column.lower()) != -1):
+        #     #         probable_colum.append(column.lower())
+        #     # else:
+        #     tokens = self.tokenizer.tokenize(column)
+        #     for token in tokens:
+        #         if (token.lower() in lemma_question):
+        #             probable_colum.append(column)
+        #             break
+
+            # for token in tokens:
+            #     if (question.lower().find(token.lower()) != -1):
+            #         probable_colum.append(column)
+            #         break
+
+        #
         for column in columns:
             if(question.lower().find(column.lower()) != -1):
                 probable_colum.append(column.lower())
@@ -107,7 +131,10 @@ class getColumns:
         # if len(probable_colum) == 1:
         #     find = self.findcolum(columns,probable_colum[0])
         # if find == -1:
-        find = self.find_first_noun(columns,probable_colum,question)
+        if(len(probable_colum) == 1):
+            find = self.findcolum(columns,probable_colum[0])
+        else:
+            find = self.find_first_noun(columns,probable_colum,question)
 
 
         return find
