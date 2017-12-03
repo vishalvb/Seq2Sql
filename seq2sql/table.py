@@ -34,11 +34,14 @@ getc = getColumn.getColumns()
 k = 0
 for question in que_table.keys():
     columns = table_colums[que_table[question.strip()]]
-    col_number = getc.predictCol(question= question,columns=columns)
-    # if (col_number == -1):
-    newQuestion, newColumns = getc.stemming_match(question,columns)
-    col_number = getc.predictCol(question=newQuestion,columns=newColumns)
+    # col_number = getc.predictCol(question= question,columns=columns)
 
+    #stemming and match
+    # if (col_number == -1):
+    # newQuestion, newColumns = getc.stemming_match(question,columns)
+    # col_number = getc.predictCol(question=newQuestion,columns=newColumns)
+
+    #lemmatization and match
     # if(col_number == -1):
     newQuestion, newColumns = getc.lemmatization_match(question, columns)
     col_number = getc.predictCol(question=newQuestion, columns=newColumns)
@@ -50,7 +53,6 @@ for question in que_table.keys():
 
     k += 1
 
-
 # print('result len',len(result),result)
 
 
@@ -58,16 +60,14 @@ count = 0
 minus1 = 0
 
 for q in que_table.keys():
-    if result[q.strip()] != correct_col_number[q.strip()]:
+    if result[q.strip()] == correct_col_number[q.strip()]:
         count += 1
+    if result[q.strip()] == -1:
+        minus1 += 1
 
 
-
-# for k in range(len(que_table)):
-#     if result[k] == -1:
-#         minus1 += 1
-#     if result[k] == correct_col_number[k]:
-#         count += 1
+print('result',result.values())
+print('correct',correct_col_number.values())
 
 print('count',count)
 print('minus1',minus1)

@@ -3,12 +3,14 @@ from nltk import word_tokenize
 from nltk import sent_tokenize
 import numpy as np
 from nltk.stem import PorterStemmer, WordNetLemmatizer
-
+from nltk import wordpunct_tokenize
 import nltk
-
+from nltk.tokenize import RegexpTokenizer
 
 class getColumns:
     def __init__(self):
+        self.lemmatize = WordNetLemmatizer()
+        self.tokenizer = RegexpTokenizer(r'\w+')
         n = 1
         # # self.nlp = StanfordCoreNLP('http://corenlp.run', port=80)
         # self.nlp = StanfordCoreNLP('http://localhost:9000')
@@ -23,6 +25,21 @@ class getColumns:
         for i in range(len(columns)):
             if(columns[i].lower() == column.lower()):
                 return i
+
+
+    '''
+    find the matching column by tokenizing and assigning number
+    '''
+    def findcol(self,question,columns):
+        probable_columns = []
+
+        for col in columns:
+            tokens = self.tokenizer(tokens)
+            temp = 0
+            for token in tokens:
+                print()
+            #if()
+
 
     '''
     find the column which appears first in the sentence 
@@ -61,14 +78,16 @@ class getColumns:
     def lemmatization_match(self, question, columns):
         new_question = ''
         new_columns = []
-        lemmatize = WordNetLemmatizer()
+
         for words in word_tokenize(question):
-            new_question += lemmatize.lemmatize(words)
+            new_question += self.lemmatize.lemmatize(words)
             new_question += ' '
 
         for column in columns:
-            new_columns.append(lemmatize.lemmatize(column))
-
+            # if(question.lower().find(self.lemmatize.lemmatize(column)) != -1):
+            new_columns.append(self.lemmatize.lemmatize(column))
+        # if(len(new_columns) <= 0):
+        #     new_columns.append('none')
         return new_question, new_columns
 
 
@@ -85,13 +104,17 @@ class getColumns:
                 probable_colum.append(column.lower())
 
         find = -1
-        if len(probable_colum) == 1:
-            find = self.findcolum(columns,probable_colum[0])
-        if find == -1:
-            find = self.find_first_noun(columns,probable_colum,question)
+        # if len(probable_colum) == 1:
+        #     find = self.findcolum(columns,probable_colum[0])
+        # if find == -1:
+        find = self.find_first_noun(columns,probable_colum,question)
 
 
         return find
+
+
+
+
 
 
     #
