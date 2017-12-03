@@ -50,7 +50,10 @@ class getColumns:
 
         colum_with_number = {}
         for col in probable_columns:
-            colum_with_number[col] = question.lower().find(col.lower())
+            if(question.lower().find(col.lower()) != -1):
+                colum_with_number[col] = question.lower().find(col.lower())
+            else:
+                colum_with_number[col] = 1000
         number = -1
         if len(colum_with_number) > 0:
             number = self.findcolum(columns, min(colum_with_number, key=colum_with_number.get))
@@ -124,9 +127,15 @@ class getColumns:
 
         #
         for column in columns:
-            if(question.lower().find(column.lower()) != -1):
-                probable_colum.append(column.lower())
-
+            tokens = self.tokenizer.tokenize(column)
+            if(len(tokens) == 1):
+                if(question.lower().find(column.lower()) != -1):
+                    probable_colum.append(column.lower())
+            else:
+                for token in tokens:
+                    if (question.lower().find(token.lower()) != -1):
+                        probable_colum.append(column.lower())
+                        break
         find = -1
         # if len(probable_colum) == 1:
         #     find = self.findcolum(columns,probable_colum[0])
