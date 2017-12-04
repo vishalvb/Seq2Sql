@@ -85,6 +85,10 @@ count = 0
 for q in que_table.keys():
     if agg_result[q.strip()] == correct_agg[q.strip()]:
         count += 1
+    else:
+        print('ques',q)
+        print('predicted',agg_result[q.strip()],'correct',correct_agg[q.strip()])
+
 
 print('count agg',count)
 
