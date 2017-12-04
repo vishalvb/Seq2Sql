@@ -23,10 +23,11 @@ print(table_colums[que_table['Which report is names Thuin Circuit and is dated J
 
 '''get the correct column number from the train file'''
 correct_col_number = {}
+correct_agg = {}
 with jsonlines.open('train.jsonl') as table_file:
     for obj in table_file:
         correct_col_number[obj["question"].strip()] =(obj["sql"]["sel"])
-
+        correct_agg[obj["question"].strip()] = obj["sql"]["agg"]
 
 
 result = {}
@@ -73,6 +74,19 @@ print('correct',len(correct_col_number),correct_col_number.values())
 print('count',count)
 print('minus1',minus1)
 
+
+agg_result = {}
+for question in que_table.keys():
+    agg_number = getc.get_agg(question)
+    agg_result[question.strip()] = agg_number
+
+
+count = 0
+for q in que_table.keys():
+    if agg_result[q.strip()] == correct_agg[q.strip()]:
+        count += 1
+
+print('count agg',count)
 
 
 # tables = dict()

@@ -148,8 +148,26 @@ class getColumns:
 
         return find
 
+    '''
+    gets the agg operators
+    '''
+    def get_agg(self,question):
+        agg_ops = ['', 'MAX', 'MIN', 'COUNT', 'SUM', 'AVG']
+        agg_number = 0
+
+        if(question.lower().find('sum') != -1 or question.lower().find('total number') != -1):
+            agg_number = 4
+        elif(question.lower().find('average') != -1):
+            agg_number = 5
+        elif(question.lower().find('how many') != -1):
+            agg_number = 3
+        elif(question.lower().find('maximum') != -1 or question.lower().find('max') != -1):
+            agg_number = 1
+        elif (question.lower().find('minimum') != -1 or question.lower().find('min') != -1):
+            agg_number = 2
 
 
+        return agg_number
 
 
 
